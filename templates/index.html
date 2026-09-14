@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ResumeIQ - Resume Analyzer</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =================================================
+         TOP BAR
+         ================================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+            <a href="/" class="brand">
+                Resume<span>IQ</span>
+            </a>
+
+            <p class="brand-tag">
+                AI-powered resume &amp; job matching
+            </p>
+
+            <a href="/history" class="nav-link">
+                Analysis history
+            </a>
+
+        </div>
+
+    </header>
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         HERO
+         ================================================= -->
+
+    <section class="hero">
+
+        <h1>
+            See exactly how your resume<br>
+            stacks up against the job.
+        </h1>
+
+        <p>
+            Upload a resume and paste a job description. ResumeIQ extracts
+            skills from both, compares the language with text similarity,
+            and scores the overall fit &mdash; with concrete suggestions
+            for closing the gap.
+        </p>
+
+    </section>
+
+
+
+    <!-- =================================================
+         INPUT SECTION
+         ================================================= -->
+
+    <section class="workspace" id="workspace">
+
+
+        <!-- Resume Upload -->
+
+        <div class="panel">
+
+            <div class="panel-head">
+
+                <span class="step">Step 01</span>
+
+                <h2>
+                    Upload resume
+                </h2>
+
+                <p class="description">
+                    PDF format only.
+                </p>
+
+            </div>
+
+
+            <label class="dropzone" for="resumeFile">
+
+                <span class="dropzone-title">
+                    Choose resume PDF
+                </span>
+
+                <span class="dropzone-hint">
+                    Click to browse your files
+                </span>
+
+            </label>
+
+            <input
+                type="file"
+                id="resumeFile"
+                accept=".pdf"
+                onchange="showFileName()"
+                hidden
+            >
+
+            <p
+                id="fileName"
+                class="file-name"
+            >
+                No file selected
+            </p>
+
+        </div>
+
+
+
+        <!-- Job Description -->
+
+        <div class="panel">
+
+            <div class="panel-head">
+
+                <span class="step">Step 02</span>
+
+                <h2>
+                    Job description
+                </h2>
+
+                <p class="description">
+                    Paste the full listing for the most accurate match.
+                </p>
+
+            </div>
+
+
+            <textarea
+                id="jobDescription"
+                placeholder="Paste the job description here..."
+            ></textarea>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================================
+         ANALYZE BUTTON
+         ================================================= -->
+
+    <div class="analyze-row">
+
+        <button
+            id="analyzeButton"
+            onclick="analyzeResume()"
+        >
+
+            <span id="buttonText">
+                Analyze resume
+            </span>
+
+        </button>
+
+    </div>
+
+
+
+    <!-- =================================================
+         LOADING
+         ================================================= -->
+
+    <div
+        id="loading"
+        class="loading hidden"
+    >
+
+        <div class="spinner"></div>
+
+        <p>
+            Analyzing your resume...
+        </p>
+
+    </div>
+
+
+
+    <!-- =================================================
+         ERROR
+         ================================================= -->
+
+    <div
+        id="error"
+        class="error hidden"
+    ></div>
+
+
+
+    <!-- =================================================
+         RESULTS
+         ================================================= -->
+
+    <section
+        id="results"
+        class="results hidden"
+    >
+
+
+        <!-- Section Title -->
+
+        <div class="section-title">
+
+            <h2>
+                Resume analysis
+            </h2>
+
+            <p>
+                Here's how well this resume matches the job.
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SCORE SECTION
+             ================================================= -->
+
+        <div class="score-section">
+
+
+            <!-- Final Score -->
+
+            <div class="score-card main-score-card">
+
+                <p class="score-label">
+                    Final match score
+                </p>
+
+
+                <div
+                    class="score-circle"
+                    id="scoreCircle"
+                >
+
+                    <div class="score-circle-inner">
+
+                        <span id="finalScore">
+                            0%
+                        </span>
+
+                        <small>
+                            Match
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <h3 id="scoreMessage">
+                    Analyzing...
+                </h3>
+
+
+                <p id="scoreDescription">
+                    Your resume compatibility score.
+                </p>
+
+            </div>
+
+
+
+            <!-- Text Similarity -->
+
+            <div class="score-card similarity-card">
+
+                <p class="score-label">
+                    Text similarity
+                </p>
+
+
+                <h3 id="textSimilarity">
+                    0%
+                </h3>
+
+
+                <p>
+                    Based on TF&ndash;IDF and cosine similarity
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             SKILL SUMMARY
+             ================================================= -->
+
+        <div class="skill-summary">
+
+
+            <div class="summary-card">
+
+                <span
+                    class="summary-number"
+                    id="matchedCount"
+                >
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Matched skills
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span
+                    class="summary-number"
+                    id="missingCount"
+                >
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Missing skills
+                </span>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span
+                    class="summary-number"
+                    id="jobSkillCount"
+                >
+                    0
+                </span>
+
+                <span class="summary-label">
+                    Required skills
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             SKILLS GRID
+             ================================================= -->
+
+        <div class="result-grid">
+
+
+            <!-- Resume Skills -->
+
+            <div class="result-card">
+
+                <div class="result-header">
+
+                    <h3>
+                        Resume skills
+                    </h3>
+
+                    <p>
+                        Skills detected in this resume
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="resumeSkills"
+                    class="skills"
+                ></div>
+
+            </div>
+
+
+
+            <!-- Job Required Skills -->
+
+            <div class="result-card">
+
+                <div class="result-header">
+
+                    <h3>
+                        Job required skills
+                    </h3>
+
+                    <p>
+                        Skills requested in the listing
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="jobSkills"
+                    class="skills"
+                ></div>
+
+            </div>
+
+
+
+            <!-- Matched Skills -->
+
+            <div class="result-card matched-card">
+
+                <div class="result-header">
+
+                    <h3>
+                        Matched skills
+                    </h3>
+
+                    <p>
+                        Already present in the resume
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="matchedSkills"
+                    class="skills"
+                ></div>
+
+            </div>
+
+
+
+            <!-- Missing Skills -->
+
+            <div class="result-card missing-card">
+
+                <div class="result-header">
+
+                    <h3>
+                        Missing skills
+                    </h3>
+
+                    <p>
+                        Worth adding or learning
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="missingSkills"
+                    class="skills"
+                ></div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+        <!-- ATS COMPATIBILITY -->
+        <div class="ats-card">
+            <div class="result-header">
+                <h3>ATS Compatibility</h3>
+                <p>Resume structure and job keyword compatibility</p>
+            </div>
+
+            <div class="ats-content">
+                <div class="ats-score-box">
+                    <span id="atsScore" class="ats-score">0%</span>
+                    <span class="ats-score-label">ATS Score</span>
+                </div>
+
+                <div id="atsChecks" class="ats-checks"></div>
+
+                <div class="ats-keywords">
+                    <h4>Missing job keywords</h4>
+                    <div id="atsMissingKeywords" class="skills"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =================================================
+             IMPROVEMENT SUGGESTIONS
+             ================================================= -->
+
+        <div class="suggestions-card">
+
+            <div class="result-header">
+
+                <h3>
+                    Resume improvement suggestions
+                </h3>
+
+                <p>
+                    Focus on these to improve the match
+                </p>
+
+            </div>
+
+
+            <div
+                id="suggestions"
+                class="suggestions"
+            ></div>
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+// ========================================================
+// SHOW SELECTED FILE NAME
+// ========================================================
+
+function showFileName() {
+
+    const fileInput =
+        document.getElementById("resumeFile");
+
+
+    const fileName =
+        document.getElementById("fileName");
+
+
+    if (fileInput.files.length > 0) {
+
+        fileName.textContent =
+            fileInput.files[0].name;
+
+    }
+
+    else {
+
+        fileName.textContent =
+            "No file selected";
+
+    }
+
+}
+
+
+
+// ========================================================
+// ANALYZE RESUME
+// ========================================================
+
+async function analyzeResume() {
+
+
+    const fileInput =
+        document.getElementById("resumeFile");
+
+
+    const jobDescription =
+        document
+        .getElementById("jobDescription")
+        .value;
+
+
+    const loading =
+        document.getElementById("loading");
+
+
+    const error =
+        document.getElementById("error");
+
+
+    const results =
+        document.getElementById("results");
+
+
+    const button =
+        document.getElementById("analyzeButton");
+
+
+    const buttonText =
+        document.getElementById("buttonText");
+
+
+    // ----------------------------------------------------
+    // Reset
+    // ----------------------------------------------------
+
+    error.classList.add("hidden");
+
+    results.classList.add("hidden");
+
+
+    // ----------------------------------------------------
+    // Validate resume
+    // ----------------------------------------------------
+
+    if (fileInput.files.length === 0) {
+
+        error.textContent =
+            "Please upload your resume PDF.";
+
+        error.classList.remove("hidden");
+
+        return;
+    }
+
+
+    // ----------------------------------------------------
+    // Validate PDF
+    // ----------------------------------------------------
+
+    const selectedFile =
+        fileInput.files[0];
+
+
+    if (
+        selectedFile.type !==
+        "application/pdf"
+    ) {
+
+        error.textContent =
+            "Please upload a PDF file only.";
+
+        error.classList.remove("hidden");
+
+        return;
+    }
+
+
+    // ----------------------------------------------------
+    // Validate job description
+    // ----------------------------------------------------
+
+    if (
+        jobDescription.trim() === ""
+    ) {
+
+        error.textContent =
+            "Please enter the job description.";
+
+        error.classList.remove("hidden");
+
+        return;
+    }
+
+
+    // ----------------------------------------------------
+    // Create FormData
+    // ----------------------------------------------------
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "file",
+        selectedFile
+    );
+
+
+    formData.append(
+        "job_description",
+        jobDescription
+    );
+
+
+    // ----------------------------------------------------
+    // Loading state
+    // ----------------------------------------------------
+
+    loading.classList.remove(
+        "hidden"
+    );
+
+
+    button.disabled = true;
+
+
+    buttonText.textContent =
+        "Analyzing...";
+
+
+    try {
+
+
+        // ------------------------------------------------
+        // Send request to FastAPI
+        // ------------------------------------------------
+
+        const response =
+            await fetch(
+                "/analyze-resume",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        // ------------------------------------------------
+        // Check response
+        // ------------------------------------------------
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Something went wrong while analyzing the resume."
+            );
+
+        }
+
+
+        // ------------------------------------------------
+        // Final Score
+        // ------------------------------------------------
+
+        const finalScore =
+            Number(data.final_score);
+
+
+        // ------------------------------------------------
+        // Text Similarity
+        // ------------------------------------------------
+
+        const textSimilarity =
+            Number(data.text_similarity);
+
+
+        document.getElementById(
+            "finalScore"
+        ).textContent =
+            finalScore.toFixed(2) + "%";
+
+
+        document.getElementById(
+            "textSimilarity"
+        ).textContent =
+            textSimilarity.toFixed(2) + "%";
+
+
+        // ------------------------------------------------
+        // Update score message
+        // ------------------------------------------------
+
+        updateScoreMessage(
+            finalScore
+        );
+
+
+        // ------------------------------------------------
+        // Update score circle
+        // ------------------------------------------------
+
+        updateScoreCircle(
+            finalScore
+        );
+
+
+        // ------------------------------------------------
+        // Skill counts
+        // ------------------------------------------------
+
+        document.getElementById(
+            "matchedCount"
+        ).textContent =
+            data.matched_skills.length;
+
+
+        document.getElementById(
+            "missingCount"
+        ).textContent =
+            data.missing_skills.length;
+
+
+        document.getElementById(
+            "jobSkillCount"
+        ).textContent =
+            data.job_skills.length;
+
+
+        // ------------------------------------------------
+        // Display skills
+        // ------------------------------------------------
+
+        displaySkills(
+            "resumeSkills",
+            data.resume_skills,
+            "normal"
+        );
+
+
+        displaySkills(
+            "jobSkills",
+            data.job_skills,
+            "normal"
+        );
+
+
+        displaySkills(
+            "matchedSkills",
+            data.matched_skills,
+            "matched"
+        );
+
+
+        displaySkills(
+            "missingSkills",
+            data.missing_skills,
+            "missing"
+        );
+
+
+        // ------------------------------------------------
+        // Display suggestions
+        // ------------------------------------------------
+
+        displaySuggestions(
+            data.suggestions
+        );
+
+        // Display ATS compatibility analysis
+        displayATSAnalysis(
+            data.ats_analysis
+        );
+
+
+        // ------------------------------------------------
+        // Show results
+        // ------------------------------------------------
+
+        results.classList.remove(
+            "hidden"
+        );
+
+
+        // ------------------------------------------------
+        // Scroll to results
+        // ------------------------------------------------
+
+        setTimeout(
+            function() {
+
+                results.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            },
+            100
+        );
+
+
+    }
+
+
+    catch (err) {
+
+        error.textContent =
+            err.message;
+
+
+        error.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    finally {
+
+        loading.classList.add(
+            "hidden"
+        );
+
+
+        button.disabled = false;
+
+
+        buttonText.textContent =
+            "Analyze Resume";
+
+    }
+
+}
+
+
+
+// ========================================================
+// SCORE MESSAGE
+// ========================================================
+
+function updateScoreMessage(
+    score
+) {
+
+
+    const message =
+        document.getElementById(
+            "scoreMessage"
+        );
+
+
+    const description =
+        document.getElementById(
+            "scoreDescription"
+        );
+
+
+    if (score >= 80) {
+
+        message.textContent =
+            "Excellent Match";
+
+
+        description.textContent =
+            "Your resume is highly aligned with this job.";
+
+    }
+
+
+    else if (score >= 60) {
+
+        message.textContent =
+            "Good Match";
+
+
+        description.textContent =
+            "Your resume matches many of the job requirements.";
+
+    }
+
+
+    else if (score >= 40) {
+
+        message.textContent =
+            "Moderate Match";
+
+
+        description.textContent =
+            "Your resume has a reasonable match, but some skills are missing.";
+
+    }
+
+
+    else {
+
+        message.textContent =
+            "Low Match";
+
+
+        description.textContent =
+            "Consider improving your resume for this job.";
+
+    }
+
+}
+
+
+
+// ========================================================
+// UPDATE SCORE CIRCLE
+// ========================================================
+
+function updateScoreCircle(
+    score
+) {
+
+
+    const circle =
+        document.getElementById(
+            "scoreCircle"
+        );
+
+
+    const percentage =
+        Math.max(
+            0,
+            Math.min(
+                score,
+                100
+            )
+        );
+
+
+    circle.style.setProperty(
+        "--score",
+        percentage
+    );
+
+}
+
+
+
+// ========================================================
+// DISPLAY SKILLS
+// ========================================================
+
+function displaySkills(
+    elementId,
+    skills,
+    type
+) {
+
+
+    const container =
+        document.getElementById(
+            elementId
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        !skills ||
+        skills.length === 0
+    ) {
+
+
+        const empty =
+            document.createElement(
+                "span"
+            );
+
+
+        empty.className =
+            "empty-skill";
+
+
+        empty.textContent =
+            "No skills found";
+
+
+        container.appendChild(
+            empty
+        );
+
+
+        return;
+
+    }
+
+
+    skills.forEach(
+        function(skill) {
+
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+
+            span.className =
+                "skill";
+
+
+            // --------------------------------------------
+            // Matched
+            // --------------------------------------------
+
+            if (
+                type === "matched"
+            ) {
+
+
+                span.classList.add(
+                    "matched-skill"
+                );
+
+
+                span.textContent =
+                    "✓ " + skill;
+
+            }
+
+
+            // --------------------------------------------
+            // Missing
+            // --------------------------------------------
+
+            else if (
+                type === "missing"
+            ) {
+
+
+                span.classList.add(
+                    "missing-skill"
+                );
+
+
+                span.textContent =
+                    "× " + skill;
+
+            }
+
+
+            // --------------------------------------------
+            // Normal
+            // --------------------------------------------
+
+            else {
+
+                span.textContent =
+                    skill;
+
+            }
+
+
+            container.appendChild(
+                span
+            );
+
+        }
+    );
+
+}
+
+
+
+// ========================================================
+// DISPLAY SUGGESTIONS
+// ========================================================
+
+function displaySuggestions(
+    suggestions
+) {
+
+
+    const container =
+        document.getElementById(
+            "suggestions"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (
+        !suggestions ||
+        suggestions.length === 0
+    ) {
+
+
+        const message =
+            document.createElement(
+                "p"
+            );
+
+
+        message.className =
+            "no-suggestions";
+
+
+        message.textContent =
+            "No improvement suggestions available.";
+
+
+        container.appendChild(
+            message
+        );
+
+
+        return;
+
+    }
+
+
+    suggestions.forEach(
+        function(item, index) {
+
+
+            const suggestion =
+                document.createElement(
+                    "div"
+                );
+
+
+            suggestion.className =
+                "suggestion";
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+
+            number.className =
+                "suggestion-number";
+
+
+            number.textContent =
+                index + 1;
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+
+            content.className =
+                "suggestion-content";
+
+
+            const title =
+                document.createElement(
+                    "h4"
+                );
+
+
+            title.textContent =
+                item.skill;
+
+
+            const description =
+                document.createElement(
+                    "p"
+                );
+
+
+            description.textContent =
+                item.suggestion;
+
+
+            content.appendChild(
+                title
+            );
+
+
+            content.appendChild(
+                description
+            );
+
+
+            suggestion.appendChild(
+                number
+            );
+
+
+            suggestion.appendChild(
+                content
+            );
+
+
+            container.appendChild(
+                suggestion
+            );
+
+        }
+    );
+
+}
+
+
+
+
+// ========================================================
+// DISPLAY ATS ANALYSIS
+// ========================================================
+
+function displayATSAnalysis(atsAnalysis) {
+
+    if (!atsAnalysis) {
+        return;
+    }
+
+    document.getElementById("atsScore").textContent =
+        Number(atsAnalysis.ats_score).toFixed(2) + "%";
+
+    const checksContainer =
+        document.getElementById("atsChecks");
+
+    checksContainer.innerHTML = "";
+
+    atsAnalysis.checks.forEach(function(check) {
+
+        const item = document.createElement("div");
+        item.className = "ats-check";
+
+        const icon = document.createElement("span");
+        icon.className = "ats-check-icon";
+
+        if (check.status === "pass") {
+            icon.textContent = "✓";
+            item.classList.add("ats-pass");
+        } else {
+            icon.textContent = "⚠";
+            item.classList.add("ats-warning");
+        }
+
+        const content = document.createElement("div");
+
+        const title = document.createElement("strong");
+        title.textContent = check.name;
+
+        const message = document.createElement("p");
+        message.textContent = check.message;
+
+        content.appendChild(title);
+        content.appendChild(message);
+
+        item.appendChild(icon);
+        item.appendChild(content);
+
+        checksContainer.appendChild(item);
+    });
+
+    const keywordContainer =
+        document.getElementById("atsMissingKeywords");
+
+    keywordContainer.innerHTML = "";
+
+    if (
+        !atsAnalysis.missing_keywords ||
+        atsAnalysis.missing_keywords.length === 0
+    ) {
+        const message = document.createElement("span");
+        message.className = "empty-skill";
+        message.textContent =
+            "No important job keywords are missing.";
+        keywordContainer.appendChild(message);
+    } else {
+        atsAnalysis.missing_keywords.forEach(function(keyword) {
+
+            const skill = document.createElement("span");
+            skill.className = "skill missing-skill";
+            skill.textContent = "× " + keyword;
+
+            keywordContainer.appendChild(skill);
+        });
+    }
+}
+
+
+// ========================================================
+// END
+// ========================================================
+
+</script>
+
+
+</body>
+
+</html>
