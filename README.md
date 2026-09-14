@@ -12,7 +12,7 @@ It extracts relevant skills, compares them with job requirements, calculates tex
 - 🔍 Resume Text Extraction
 - 🧠 Resume Skill Extraction
 - 📋 Job Description Skill Extraction
-- 🎯 Skill Matching
+- 🎯 Skill Matching & Skill Match Score
 - 📊 Final Match Score
 - 📈 Text Similarity Analysis
 - 🤖 ATS Compatibility Score
@@ -232,7 +232,7 @@ The history includes:
 - Resume filename
 - Final Match Score
 - ATS Score
-- Text Similarity
+- Skill Match Score
 - Matched skill count
 - Missing skill count
 - Required skill count
@@ -415,7 +415,7 @@ Final Match Score: 47.18%
 
 ATS Compatibility Score: 70.26%
 
-Text Similarity: 31.61%
+Skill Match Score: 53.85%
 
 Matched Skills:
 - Python
