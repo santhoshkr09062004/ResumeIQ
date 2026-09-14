@@ -97,7 +97,7 @@ def history():
             </td>
 
             <td class="mono">
-                {analysis["text_similarity"]}%
+                {(analysis["matched_count"] / analysis["required_count"] * 100) if analysis["required_count"] else 0:.2f}%
             </td>
 
             <td class="mono">
@@ -375,7 +375,7 @@ def history():
                             <th>Resume</th>
                             <th>Final score</th>
                             <th>ATS score</th>
-                            <th>Text similarity</th>
+                            <th>Skill Match</th>
                             <th>Matched</th>
                             <th>Missing</th>
                             <th>Required</th>
