@@ -25,7 +25,7 @@ from app.database import (
 
 app = FastAPI(
     title="ResumeIQ",
-    description="AI-powered Resume and Job Matching System",
+    description="Intelligent Resume Analysis and Job Matching System",
     version="1.0.0"
 )
 
@@ -338,7 +338,7 @@ def history():
                 </a>
 
                 <p class="brand-tag">
-                    AI-powered resume &amp; job matching
+                    Intelligent resume &amp; job matching
                 </p>
 
                 <a href="/" class="nav-link">

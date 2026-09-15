@@ -6,6 +6,12 @@ It extracts relevant skills, compares them with job requirements, calculates tex
 
 ---
 
+## 🌐 Live Demo
+
+Try ResumeIQ online:
+
+https://resumeiq-97kt.onrender.com
+
 ## 🚀 Features
 
 - 📄 Resume PDF Upload
@@ -490,16 +496,32 @@ The actual results depend on the resume and job description provided by the user
 
 # 🌐 Deployment
 
-ResumeIQ can be deployed as a web application using a cloud hosting platform such as Render.
+ResumeIQ is deployed as a web application using Render and Aiven Cloud MySQL.
 
-For deployment, the application requires:
+The deployed application uses:
 
-- Python environment
-- FastAPI application
-- Uvicorn server
-- `requirements.txt`
-- Environment variables
-- A cloud-accessible MySQL database for online Analysis History
+- Python
+- FastAPI
+- Uvicorn
+- Render
+- Aiven Cloud MySQL
+- GitHub
+- Environment Variables
+
+### 🔄 Deployment Workflow
+
+```text
+GitHub
+   ↓
+Push changes to main
+   ↓
+Render Auto-Deploy
+   ↓
+Build Application
+   ↓
+Deploy ResumeIQ
+
+```
 
 ### Build Command
 
