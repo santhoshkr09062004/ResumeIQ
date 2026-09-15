@@ -432,6 +432,12 @@ Missing Skills:
 - Machine Learning
 - Git
 - Cloud Computing
+
+Resume Improvement Suggestions:
+- Add JavaScript experience to your resume.
+- Add FastAPI and REST API experience if applicable.
+- Highlight Git/GitHub usage.
+- Include relevant Machine Learning or Cloud Computing experience if applicable.
 ```
 
 The actual results depend on the resume and job description provided by the user.
