@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from datetime import timezone, timedelta
 
 import shutil
 import os
@@ -75,6 +76,8 @@ def history():
         created_at = analysis["created_at"]
 
         if created_at:
+            ist = timezone(timedelta(hours=5, minutes=30))
+            created_at = created_at.replace(tzinfo=timezone.utc).astimezone(ist)
 
             created_at = created_at.strftime(
                 "%d %b %Y, %I:%M %p"
