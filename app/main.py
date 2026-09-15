@@ -3,6 +3,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 import shutil
+import os
+os.makedirs("uploads", exist_ok=True)
 
 from app.utils.resume_parser import extract_text_from_pdf
 
