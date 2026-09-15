@@ -25,6 +25,44 @@ It extracts relevant skills, compares them with job requirements, calculates tex
 
 ---
 
+## 🖥️ Screenshots
+
+<table>
+<tr>
+<td width="50%">
+
+### 🏠 Resume Analysis
+<img src="screenshots/home.png" width="100%">
+
+</td>
+<td width="50%">
+
+### 📊 Analysis Results
+<img src="screenshots/results.png" width="100%">
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+### 🤖 ATS Compatibility
+<img src="screenshots/ats.png" width="100%">
+
+</td>
+<td width="50%">
+
+### 💡 Resume Improvement Suggestions
+<img src="screenshots/suggestions.png" width="100%">
+
+</td>
+</tr>
+</table>
+
+### 🗄️ Analysis History
+
+<img src="screenshots/history.png" width="75%">
+
 ## 🛠️ Technologies Used
 
 ### Frontend
@@ -66,6 +104,12 @@ It extracts relevant skills, compares them with job requirements, calculates tex
 
 ```text
 ResumeIQ/
+├── screenshots/
+│   ├── home.png
+│   ├── results.png
+│   ├── ats.png
+│   ├── suggestions.png
+│   └── history.png
 │
 ├── app/
 │   ├── __init__.py
